@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Local secrets and sessions
+.env
+*.session
+*.session-journal
+*token*
+*secret*
+*cookie*
+*credential*
+*.local.*
+
+# Runtime data / local databases
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+logs/
+data/
+outputs/
+work/
+
+# Browser profiles / caches
+Default/
+Profile 1/
+Profile 2/
+.tmp-chrome*/
+chrome-diagnostic*/
+Cache/
+Code Cache/
+GPUCache/
+Service Worker/
+Local Storage/
+Session Storage/

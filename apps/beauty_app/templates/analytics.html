@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- 결산분석 하위 탭 -->
+<div class="analytics-sub-tabs">
+  <button type="button" class="sub-tab active" data-tab="analysis">분석</button>
+  <button type="button" class="sub-tab" data-tab="period">기간비교</button>
+</div>
+
+<div id="tab-analysis">
+<h1>결산분석</h1>
+<p class="hint">일일결산 데이터를 기준으로 매출 흐름, 방문자 수, 요일별 패턴을 확인합니다.</p>
+
+<section class="card">
+  <h2>분석 필터</h2>
+  <div class="formgrid analytics-filter">
+    <label>기준 월<input type="month" id="analyticsMonth" value="{{ current_month }}"></label>
+    <label>특정 날짜<input type="date" id="analyticsDate" value="{{ today }}"></label>
+    <label>분석 기준
+      <select id="analyticsBasis">
+        <option value="calendar">일일결산 기반</option>
+        <option value="workday">실근무일 기반</option>
+      </select>
+    </label>
+    <label>평균 기준
+      <select id="analyticsAverage">
+        <option value="all">전체</option>
+        <option value="3m">최근 3개월</option>
+        <option value="6m">최근 6개월</option>
+      </select>
+    </label>
+  </div>
+  <div class="actions">
+    <button type="button" id="analyticsSearch">조회</button>
+    <button type="button" id="analyticsRefresh">새로고침</button>
+  </div>
+  <div id="analyticsMessage" class="hint"></div>
+</section>
+
+<section class="analytics-cards">
+  <div class="metric"><b>오늘 요약</b><div id="todayCard">불러오는 중...</div></div>
+  <div class="metric"><b>특정일 요약</b><div id="selectedCard">불러오는 중...</div></div>
+  <div class="metric"><b>이번달 누적</b><div id="monthCard">불러오는 중...</div></div>
+  <div class="metric"><b>비교 상태</b><div id="compareCard">불러오는 중...</div></div>
+</section>
+
+<section class="card">
+  <h2>누적 선 그래프</h2>
+  <p class="hint">필터의 분석 기준에 따라 달력일 또는 실근무일 기준으로 표시됩니다.</p>
+  <div id="trendCharts" class="chart-grid"></div>
+</section>
+
+<section class="card">
+  <h2>요일별 막대 그래프</h2>
+  <p class="hint">요일별 평균값 기준으로 이번달, 지난달, 평균을 비교합니다.</p>
+  <div id="weekdayCharts" class="chart-grid"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='analytics.js') }}"></script>
+</div>
+
+<!-- 기간비교 탭: 신규 추가, 기본 숨김 -->
+<div id="tab-period" style="display:none">
+  <div class="period-controls">
+    <div class="unit-selector">
+      <button type="button" class="unit-btn active" data-unit="day">일</button>
+      <button type="button" class="unit-btn" data-unit="week">주</button>
+      <button type="button" class="unit-btn" data-unit="month">월</button>
+      <button type="button" class="unit-btn" data-unit="quarter">분기</button>
+      <button type="button" class="unit-btn" data-unit="half">반기</button>
+      <button type="button" class="unit-btn" data-unit="year">연간</button>
+    </div>
+
+    <div class="period-start-inputs">
+      <div id="ref-day-wrap">
+        <label>기준일 <input type="date" id="ref-day"></label>
+      </div>
+
+      <div id="ref-month-wrap" style="display:none">
+        <label>기준월 <input type="month" id="ref-month"></label>
+      </div>
+
+      <div id="ref-quarter-wrap" style="display:none">
+        <label>연도 <input type="number" id="ref-quarter-year" style="width:80px"></label>
+        <label>분기
+          <select id="ref-quarter-q">
+            <option value="1">1Q</option>
+            <option value="2">2Q</option>
+            <option value="3">3Q</option>
+            <option value="4">4Q</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="ref-half-wrap" style="display:none">
+        <label>연도 <input type="number" id="ref-half-year" style="width:80px"></label>
+        <label>반기
+          <select id="ref-half-h">
+            <option value="1">상반기</option>
+            <option value="2">하반기</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="ref-year-wrap" style="display:none">
+        <label>연도 <input type="number" id="ref-year" style="width:90px"></label>
+      </div>
+
+      <button type="button" id="period-generate-btn">조회</button>
+    </div>
+  </div>
+
+  <div class="period-cards-outer">
+    <div class="period-cards-container" id="period-cards-container"></div>
+    <button type="button" id="add-period-card-btn" title="기간 추가">+</button>
+  </div>
+
+  <div id="period-edit-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <h3>기간 수정</h3>
+
+      <div>
+        <label>시작일<br><input type="date" id="modal-edit-start"></label>
+      </div>
+
+      <div>
+        <label>종료일<br><input type="date" id="modal-edit-end"></label>
+      </div>
+
+      <p id="modal-edit-error" style="color:#C0392B;display:none">
+        시작일이 종료일보다 늦을 수 없습니다
+      </p>
+
+      <div>
+        <button type="button" id="modal-edit-confirm">확인</button>
+        <button type="button" id="modal-edit-cancel">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
